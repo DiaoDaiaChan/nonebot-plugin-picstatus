@@ -73,17 +73,60 @@
 
 {% macro gpu(d) %}
 {% for gpu in d.render_gpu_info %}
-  {% set gpu_name = gpu.name or "Unknown GPU" %}
-  {% set gpu_id = gpu.device_id or 0 %}
-  {% set gpu_mem_used = gpu.used_memory %}
-  {% set gpu_mem_total = gpu.total_memory %}
-  {% set gpu_temp = gpu.temperature or "N/A" %}
-  {% set gpu_mode = gpu.driver_mode or "Unknown Mode" %}
-  {% set gpu_percent = gpu.percent or 0 %}
-  <div class="card rectangle-chart-line">
-    {{ rectangle_chart(gpu_percent, "GPU: " + gpu_id, gpu_name, gpu_mem_used, gpu_mem_total, gpu_temp, gpu_mode) }}
-  </div>
-{% endfor %}
+
+    {% set gpu_name = gpu.name or "Unknown GPU" %}
+    {% set gpu_id = gpu.device_id or 0 %}
+    {% set gpu_load = gpu.load or 0 %}
+    {% set gpu_mem_used = gpu.used_memory or 0 %}
+    {% set gpu_mem_total = gpu.total_memory or 0 %}
+    {% set gpu_temp = gpu.temperature or "N/A" %}
+    {% set gpu_mode = gpu.driver_mode or "Unknown Mode" %}
+    {% set gpu_percent = gpu.percent or 0 %}
+    {% set gpu_fan_speed = gpu.fan_speed or "N/A" %}
+    {% set gpu_power_usage = gpu.power_usage or "N/A" %}
+    {% set gpu_performance_state = gpu.performance_state or "N/A" %}
+    {% set gpu_ecc_mode = gpu.ecc_mode or "Unknown" %}
+
+<div class="card disk-info splitter">
+<div class="title" style="color: #0a3069">GPU {{ gpu_id }}  {{ gpu_name }}  {{ gpu_mem_total }} MB </div>
+<div class="title">{{ gpu_mode }} 模式  -  ECC模式: {{ gpu_ecc_mode }}</div>
+<div class="desc">温度: {{ gpu_temp }} ℃  |  风扇: {{ gpu_fan_speed }}  |  功耗: {{ gpu_power_usage }} W  |  工作性能: P{{ gpu_performance_state }} </div>
+  <div class="list-grid disk-usage">
+        <div>负载: </div>
+        <div class="progress-bar">
+        <div class="background"></div>
+        <div class="progress {{ gpu_load | percent_to_color }}" style="width: {{ gpu_load }}%"></div>
+        <div class="label">{{ gpu_load / 100 }}</div>
+        </div>
+        <div class="align-right">
+        {%- if gpu_load %}{{ '{0:.1f}%'.format(gpu_load) }}
+        {%- else %}0%{% endif -%}
+        </div>
+        <div>显存: </div>
+        <div class="progress-bar">
+          <div class="background"></div>
+            <div class="progress {{ gpu_percent | percent_to_color }}" style="width: {{ gpu_percent }}%"></div>
+            <div class="label">{{ gpu_mem_used }} MB / {{gpu_mem_total}} MB</div>
+        </div>
+        <div class="align-right">
+          {%- if gpu_percent %}{{ '{0:.1f}%'.format(gpu_percent) }}
+          {%- else %}0%{% endif -%}
+        </div>
+{#          <div class="list-grid disk-io">#}
+{#            <div style="align-items: flex-start">GPU {{ gpu_id + gpu_name}}</div>#}
+{#            <div>温度</div>#}
+{#            <div class="align-right">{{ gpu_temp }} ℃</div>#}
+{#            <div>|</div>#}
+{#            <div>DM</div>#}
+{#            <div class="align-right">{{ gpu_mode }}</div>#}
+{#          </div>#}
+
+
+
+
+    </div>
+    </div>
+    {% endfor %}
 {% endmacro %}
 
 
