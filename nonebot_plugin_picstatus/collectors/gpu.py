@@ -65,7 +65,12 @@ async def get_gpu_info() -> List[GpuInfo]:
             driver_mode = _get_driver_mode(handle)
             percent = int(used_memory / total_memory * 100)
 
-            fan_speed = pynvml.nvmlDeviceGetFanSpeed(handle)
+            try:
+                pynvml.nvmlDeviceGetFanSpeed(handle)
+            except pynvml.NVMLError_NotSupported:
+                fan_speed = "N/A"
+            else:
+                fan_speed = pynvml.nvmlDeviceGetFanSpeed(handle)
             power_usage = int(pynvml.nvmlDeviceGetPowerUsage(handle) / 1000)
             performance_state = pynvml.nvmlDeviceGetPerformanceState(handle)
             try:
