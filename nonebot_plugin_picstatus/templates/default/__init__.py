@@ -51,6 +51,12 @@ COMPONENT_COLLECTORS = {
         "memory_stat",
         "swap_stat",
     },
+    "gpu": {
+        "render_gpu_info",
+        # "gpu_memory_info",
+        # "gpu_memory_usage",
+        # "gpu_temperature",
+    },
     "disk": {"disk_usage", "disk_io"},
     "network": {"network_io", "network_connection"},
     "process": {"process_status"},
@@ -68,6 +74,7 @@ class TemplateConfig(BaseModel):
     ps_default_components: List[str] = [
         "header",
         "cpu_mem",
+        "gpu",
         "disk",
         "network",
         "process",

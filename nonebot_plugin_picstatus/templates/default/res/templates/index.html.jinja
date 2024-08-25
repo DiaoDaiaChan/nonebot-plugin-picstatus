@@ -1,4 +1,4 @@
-{% from 'macros.html.jinja' import header, cpu_mem, disk, network, process, footer %}
+{% from 'macros.html.jinja' import header, cpu_mem, gpu, disk, network, process, footer %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -20,6 +20,8 @@
         {{ header(d) }}
         {% elif name == "cpu_mem" %}
         {{ cpu_mem(d) }}
+        {% elif name == "gpu" %}
+        {{ gpu(d) }}
         {% elif name == "disk" %}
         {{ disk(d) }}
         {% elif name == "network" %}

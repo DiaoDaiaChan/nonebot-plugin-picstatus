@@ -18,6 +18,23 @@
 </div>
 {% endmacro %}
 
+{% macro rectangle_chart(percent, title, name, mem_used, mem_total, temp, mode) %}
+<div class="donut-chart" style="justify-content: left; align-items: center; text-align: left">
+  <div class="chart-wrapper">
+    <div class="title" style="scale: 60%">{{ title + name }}</div>
+    <div class="desc">{{ mode }}</div>
+    <div class="chart">
+      <div class="bar {{ percent | percent_to_color }}" style="width: {{ percent }}%;"></div>
+    </div>
+    <div class="label">
+      {%- if percent == None %}未部署
+      {%- else %}{{ '{0:.0f}%'.format(percent) }}{% endif -%}
+    </div>
+  </div>
+</div>
+{% endmacro %}
+
+
 {% macro header(d) %}
 <div class="card header splitter">
   {% for info in d.bots %}
@@ -53,6 +70,22 @@
   {{ donut_chart(d.swap_stat.percent, "SWAP", "{} / {}").format(swap_used, swap_total) }}
 </div>
 {% endmacro %}
+
+{% macro gpu(d) %}
+{% for gpu in d.render_gpu_info %}
+  {% set gpu_name = gpu.name or "Unknown GPU" %}
+  {% set gpu_id = gpu.device_id or 0 %}
+  {% set gpu_mem_used = gpu.used_memory %}
+  {% set gpu_mem_total = gpu.total_memory %}
+  {% set gpu_temp = gpu.temperature or "N/A" %}
+  {% set gpu_mode = gpu.driver_mode or "Unknown Mode" %}
+  {% set gpu_percent = gpu.percent or 0 %}
+  <div class="card rectangle-chart-line">
+    {{ rectangle_chart(gpu_percent, "GPU: " + gpu_id, gpu_name, gpu_mem_used, gpu_mem_total, gpu_temp, gpu_mode) }}
+  </div>
+{% endfor %}
+{% endmacro %}
+
 
 {% macro disk(d) %}
 <div class="card disk-info splitter">
